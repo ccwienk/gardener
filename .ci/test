@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+set -e
+set -x
+
+if [ -z "$SOURCE_PATH" ]; then
+  export SRC_DIR="$(readlink -f "$(dirname ${0})/..")"
+else
+  export SRC_DIR="${SOURCE_PATH}"
+fi
+
+
+# dance around go-build
+export GOPATH="${SRC_DIR}"
+mkdir -p "${SRC_DIR}/src/github.com/gardener"
+src_symlink="${SRC_DIR}/src/github.com/gardener/gardener"
+if [ -s "${src_symlink}" ]; then
+ rm "${src_symlink}"
+fi
+ln -s "${SRC_DIR}" "${src_symlink}"
+cd "${src_symlink}"
+
+make test
