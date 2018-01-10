@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+
+set -e
+set -x
+
+# $1 SRC_DIR (repository root directory)
+# $2 OUT_DIR (build output directory, may be assumed to exist)
+# $3 VERSION_FILE (a regular file containing the build version)
+
+export SRC_DIR="$(readlink -f "${1}")"
+export OUT_DIR="$(readlink -f "${2}")"
+export VERSION_FILE="$(readlink -f "${3}")"
+export VERSION="$(cat "${VERSION_FILE}")"
+
+
+# dance around go-build
+export GOPATH="${SRC_DIR}"
+mkdir -p "${SRC_DIR}/src/code.sapcloud.io/kubernetes"
+src_symlink="${SRC_DIR}/src/code.sapcloud.io/kubernetes/garden-operator"
+if [ -s "${src_symlink}" ]; then
+ rm "${src_symlink}"
+fi
+ln -s "${SRC_DIR}" "${src_symlink}"
+cd "${src_symlink}"
+
+# create build result, expose it to "${OUT_DIR}"
+make BINDIR="${OUT_DIR}/rel/bin" VERSION="${VERSION}" build
+cp -r "${SRC_DIR}/charts" "${OUT_DIR}/"
+cp "${SRC_DIR}/Dockerfile" "${OUT_DIR}/Dockerfile"

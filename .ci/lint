@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+set -e
+set -x
+
+# $1 SRC_DIR (repository root directory)
+
+export SRC_DIR="$(readlink -f "${1}")"
+
+
+# dance around go-build
+export GOPATH="${SRC_DIR}"
+mkdir -p "${SRC_DIR}/src/code.sapcloud.io/kubernetes"
+src_symlink="${SRC_DIR}/src/code.sapcloud.io/kubernetes/garden-operator"
+if [ -s "${src_symlink}" ]; then
+ rm "${src_symlink}"
+fi
+ln -s "${SRC_DIR}" "${SRC_DIR}/src/code.sapcloud.io/kubernetes/garden-operator"
+cd "${src_symlink}"
+
+make lint vet
