@@ -26,7 +26,7 @@ echo "SRC_DIR: ${SRC_DIR}"
 
 export VERSION="$(cat "${VERSION_FILE}")"
 
-export OUT_DIR="${SRC_DIR}/bin/rel"
+export OUT_DIR="${BINARY_PATH}/bin/rel"
 
 # dance around go-build
 export GOPATH="${SRC_DIR}"
@@ -39,5 +39,5 @@ ln -s "${SRC_DIR}" "${src_symlink}"
 cd "${src_symlink}"
 
 # create build result, expose it to "${OUT_DIR}"
-make BIN_DIR="${OUT_DIR}" VERSION="${VERSION}" controller-manager-build
+make BIN_DIR="${OUT_DIR}" VERSION="${VERSION}" build
 
