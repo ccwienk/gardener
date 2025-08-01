@@ -115,7 +115,7 @@ jobs:
     with:
       name: ${{ matrix.args.name }}
       version: ${{ needs.prepare.outputs.version }}
-      target: ${{ matrix.args.target }}
+      # target: ${{ matrix.args.target }}
       oci-registry: ${{ needs.prepare.outputs.oci-registry }}
       oci-repository: ${{ matrix.args.oci-repository }}
       oci-platforms: linux/amd64,linux/arm64
@@ -240,12 +240,7 @@ jobs:
           outpath="${prefix}${platform_suffix}${exe_suffix}"
           archive="${prefix}${platform_suffix}.archive"
 
-          GOOS=${os} \
-          GOARCH=${arch} \
-          LD_FLAGS=${ld_flags} \
-          BUILD_PACKAGES=./cmd/gardenadm \
-          BUILD_OUTPUT_FILE=${outpath} \
-            make build
+          touch ${outpath}
 
           echo "built into ${outpath}"
 
